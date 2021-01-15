@@ -16,7 +16,12 @@ class PostsController < ApplicationController
   def create
 		@post = Post.new(post_params)
 		if @post.save
-			redirect_to @post, success: 'Статья успешно создана'
+			if params[:new_draft]
+				@post.update(published: false)
+				redirect_to @post, success: 'Добавлено в черновики'
+			else
+				redirect_to @post, success: 'Статья успешно создана'
+			end
 		else
 			flash.now[:danger] = 'Статья не создана'
 			render :new
@@ -28,7 +33,17 @@ class PostsController < ApplicationController
 
   def update
 		if @post.update(post_params)
-			redirect_to @post, success: 'Статья успешно обновлена'
+			if params[:new_draft]
+				@post.update(published: false)
+				redirect_to @post, success: 'Добавлено в черновики'
+			else
+				if params[:new_post]
+					@post.update(published: true)
+					redirect_to @post, success: 'Опубликовано'
+				else
+					redirect_to @post, success: 'Статья успешно обновлена'
+				end
+			end
 		else
 			flash.now[:danger] = 'Статья не обновлена'
 			render :edit
@@ -36,6 +51,7 @@ class PostsController < ApplicationController
 	end
 
   def destroy
+		@post = Post.find(params[:id])
 		@post.destroy
 		redirect_to posts_path, success: 'Статья успешно удалена'
 	end
@@ -47,6 +63,6 @@ class PostsController < ApplicationController
 	end
 
   def post_params
-		params.require(:post).permit(:title, :summary, :body)
+		params.require(:post).permit(:title, :summary, :body, :image, :remove_image, :image_cache)
 	end
 end

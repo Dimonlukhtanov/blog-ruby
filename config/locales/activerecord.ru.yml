@@ -1,0 +1,17 @@
+ru:
+  activerecord:
+    models:
+      post: 'Статья'
+    attributes:
+      post:
+        title: 'Название'
+        summary: 'Краткая статья'
+        body: 'Содержание'
+        image:  'Изображение'
+    errors:
+      messages:
+        blank: '- это поле не может быть пустым'
+        extension_whitelist_error: "Неверный формат - только jpg, jpeg, gif, png"
+  errors:
+    messages:
+      extension_whitelist_error: "- только jpg, jpeg, gif, png"

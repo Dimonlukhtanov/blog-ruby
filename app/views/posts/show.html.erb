@@ -2,7 +2,13 @@
   <section class="post-head">
     <h1><%= @post.title %></h1>
     <small>
-      <time><%= @post.created_at.to_date.strftime("%d %B, %Y %H:%M") %></time>
+      <time><%= @post.created_at.to_date.strftime("%d %B, %Y") %></time>
+      |
+      <% if @post.published? %>
+        <span class="badge rounded-pill bg-primary">Опубликовано</span>
+      <% else %>
+        <span class="badge rounded-pill bg-secondary">Черновик</span>
+      <% end %>
       |
       <%= link_to 'Изменить', edit_post_path(@post) %>
       |
@@ -12,6 +18,43 @@
   </section>
 
   <section class="post-body">
+    <%= image_tag @post.image.url(:large), class: 'img-show' if @post.image? %>
     <%= @post.body %>
   </section>
 </article>
+
+<h2>Все комментарии</h2>
+<article class="comment">
+<% @post.comments.each do |comment| %>
+  <div class="alert alert-success">
+    <p>
+      <strong>
+        <%= comment.username %>
+      </strong>:
+      <%= comment.body %>
+    </p>
+  </div>
+  <% end %>
+</article>
+<% if @post.comments.length < 1 %>
+  <br>
+  <p><span>Пока нет комментариев</span></p>
+  <br/>
+<% end %>
+
+<h3>Добавить комментарий</h3>
+<%= form_for [@post, @post.comments.build] do |f| %>
+  <div class="form-group">
+    <%= f.label :'Пользователь' %>
+    <%= f.text_field :username, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :'Текст комментария' %>
+    <%= f.text_area :body, class: 'form-control', rows: '5' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit 'Отправить', class: 'btn btn-success' %>
+  </div>
+<% end %>
