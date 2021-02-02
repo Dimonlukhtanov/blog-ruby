@@ -1,12 +1,13 @@
 class PostsController < ApplicationController
-
-  before_action :set_post, only: [ :show, :edit, :update, :destroy ]
+  #before_action :authenticate_user!, except: [:index, :show]
+  before_action :set_post, only: [:edit, :update, :destroy ]
 
 	def index
-		@posts = Post.all
+		@posts = Post.all.where(published: true)
 	end
 
   def show
+		@post = Post.find(params[:id])
 	end
 
   def new
@@ -14,6 +15,7 @@ class PostsController < ApplicationController
 	end
 
   def create
+		authorize Post
 		@post = Post.new(post_params)
 		if @post.save
 			if params[:new_draft]
@@ -26,6 +28,16 @@ class PostsController < ApplicationController
 			flash.now[:danger] = 'Статья не создана'
 			render :new
 		end
+	end
+
+	def myposts
+		@posts = Post.where(user_id: current_user.id, published: true)
+		authorize @posts
+	end
+
+	def mydrafts
+		@posts = Post.where(user_id: current_user.id, published: false)
+		authorize @posts
 	end
 
   def edit
@@ -51,7 +63,6 @@ class PostsController < ApplicationController
 	end
 
   def destroy
-		@post = Post.find(params[:id])
 		@post.destroy
 		redirect_to posts_path, success: 'Статья успешно удалена'
 	end
@@ -60,9 +71,13 @@ class PostsController < ApplicationController
 
   def set_post
 		@post = Post.find(params[:id])
+		authorize @post
 	end
 
   def post_params
-		params.require(:post).permit(:title, :summary, :body, :image, :remove_image, :image_cache)
+		req_body = params.require(:post).permit(:title, :summary, :body, :image, :remove_image, :image_cache)
+		req_body[:user_id] = current_user.id
+
+		req_body
 	end
 end

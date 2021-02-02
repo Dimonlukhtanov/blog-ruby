@@ -8,6 +8,10 @@ ru:
         summary: 'Краткая статья'
         body: 'Содержание'
         image:  'Изображение'
+      user:
+        email: 'Адрес электронной почты'
+        password: 'Пароль'
+        username: 'Имя пользователя'
     errors:
       messages:
         blank: '- это поле не может быть пустым'

@@ -16,13 +16,33 @@
         <div class="container-fluid">
           <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="<%= posts_path %>">Статьи</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Контакты</a>
+              <a class="nav-link active" aria-current="page" href="<%= root_path %>"> Все статьи</a>
             </li>
           </ul>
-          <a class="btn btn-outline-primary" href="<%= new_post_path %>" role="button">Новая статья</a>
+          <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+            <% if user_signed_in? %>
+              <h5><span class="badge bg-secondary"><%= current_user.username %></span></h5>
+              <li class="nav-item">
+                <%= link_to "Мои посты", myposts_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Мои черновики", mydrafts_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item nav-item-margin">
+                <%= link_to "Новая статья", new_post_path, class: 'btn btn-success' %>
+              </li>
+              <li>
+                <%= link_to "Выход", destroy_user_session_path, method: :delete, class: "nav-link" %>
+              </li>
+            <% else %>
+            <li class="nav-item">
+              <%= link_to "Вход", new_user_session_path, class: "nav-link" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Регистрация", new_user_registration_path, class: "nav-link" %>
+            </li>
+            <% end %>
+          </ul>
         </div>
       </nav>
     </div>
@@ -31,7 +51,10 @@
     <div class="row">
       <div  class="col-md-12">
         <% flash.each do |name, message| %>
-          <div class="alert alert-<%= name %>">
+          <div class="alert <%= bootstrap_class_for(name) %>">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
             <%= message %>
           </div>
         <% end %>

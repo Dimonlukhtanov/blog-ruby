@@ -1,7 +1,7 @@
 <article class="post">
   <section class="post-head">
     <h1><%= @post.title %></h1>
-    <small>
+    <span>
       <time><%= @post.created_at.to_date.strftime("%d %B, %Y") %></time>
       |
       <% if @post.published? %>
@@ -9,12 +9,14 @@
       <% else %>
         <span class="badge rounded-pill bg-secondary">Черновик</span>
       <% end %>
+      Автор статьи: <span class="badge bg-secondary"><%= @post.user.username %></span>
+      <% if current_user && current_user.id == @post.user_id %>
       |
       <%= link_to 'Изменить', edit_post_path(@post) %>
       |
       <%= link_to 'Удалить', post_path(@post), method: :delete, data: { confirm: 'Вы уверены?' } %>
-
-    </small>
+      <% end %>
+    </span>
   </section>
 
   <section class="post-body">
@@ -23,38 +25,46 @@
   </section>
 </article>
 
-<h2>Все комментарии</h2>
-<article class="comment">
-<% @post.comments.each do |comment| %>
-  <div class="alert alert-success">
-    <p>
-      <strong>
-        <%= comment.username %>
-      </strong>:
-      <%= comment.body %>
-    </p>
-  </div>
-  <% end %>
-</article>
+<h3>Все комментарии</h3>
 <% if @post.comments.length < 1 %>
   <br>
   <p><span>Пока нет комментариев</span></p>
   <br/>
 <% end %>
 
-<h3>Добавить комментарий</h3>
-<%= form_for [@post, @post.comments.build] do |f| %>
+<article class="comment">
+<% @post.comments.each do |comment| %>
   <div class="form-group">
-    <%= f.label :'Пользователь' %>
-    <%= f.text_field :username, class: 'form-control' %>
+        <span class="badge bg-secondary"><%= comment.username %></span>: <%= comment.body %>
+    <div class="buttons">
+      <% if current_user && current_user.id == comment.author_id %>
+        <%= link_to "Удалить", [comment.post, comment], method: :delete,
+                  data: { confirm: 'Хотите удалить комментарий?' }
+        %>
+      <% end %>
+    </div>
   </div>
+<% end %>
+</article>
 
-  <div class="form-group">
-    <%= f.label :'Текст комментария' %>
-    <%= f.text_area :body, class: 'form-control', rows: '5' %>
+<% unless current_user %>
+  <div>
+    Авторизуйтесь, чтобы оценивать посты и оставлять комментарии.
   </div>
+<% end %>
 
-  <div class="form-group">
-    <%= f.submit 'Отправить', class: 'btn btn-success' %>
-  </div>
+
+<% if current_user %>
+  <h3>Добавить комментарий</h3>
+  <%= form_for [@post, @post.comments.build] do |f| %>
+
+    <div class="form-group">
+      <%= f.label :'Текст комментария' %>
+      <%= f.text_area :body, class: 'form-control', rows: '5' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit 'Отправить', class: 'btn btn-success' %>
+    </div>
+  <% end %>
 <% end %>
