@@ -6,6 +6,11 @@
       |
       <% if @post.published? %>
         <span class="badge rounded-pill bg-primary">Опубликовано</span>
+        |
+        <span class="upRate" style="color: green"> + <%= @post.up_rate.length %></span>
+        /
+        <span class="downRate" style="color: red">- <%= @post.down_rate.length %></span>
+        |
       <% else %>
         <span class="badge rounded-pill bg-secondary">Черновик</span>
       <% end %>
@@ -16,6 +21,7 @@
       |
       <%= link_to 'Удалить', post_path(@post), method: :delete, data: { confirm: 'Вы уверены?' } %>
       <% end %>
+
     </span>
   </section>
 
@@ -23,6 +29,12 @@
     <%= image_tag @post.image.url(:large), class: 'img-show' if @post.image? %>
     <%= @post.body %>
   </section>
+  <% if @post.published? %>
+    <div class="btn-group">
+    <%= button_to "Нравится", post_up_rate_path(@post.id), :method => :get, :class => "btn btn-outline-success btn-sm", :disabled => !current_user %>
+    <%= button_to "Не нравится", post_down_rate_path(@post.id), :method => :get, :class => "btn btn-outline-danger btn-sm", :disabled => !current_user %>
+    </div>
+  <% end %>
 </article>
 
 <h3>Все комментарии</h3>

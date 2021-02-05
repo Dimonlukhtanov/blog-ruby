@@ -43,6 +43,40 @@ class PostsController < ApplicationController
   def edit
 	end
 
+	def up_rate_post
+		@post = Post.find(params[:post_id])
+		user_id = current_user.id.to_s
+
+		if @post.up_rate.include?(user_id)
+			nil
+		else
+			if @post.down_rate.include?(user_id)
+				@post.down_rate.delete(user_id)
+			end
+			@post.up_rate.push(user_id)
+		end
+
+		@post.save
+		redirect_to @post, success: 'Действие успешно выполнено.'
+	end
+
+	def down_rate_post
+		@post = Post.find(params[:post_id])
+		user_id = current_user.id.to_s
+
+		if @post.down_rate.include?(user_id)
+			nil
+		else
+			if @post.up_rate.include?(user_id)
+				@post.up_rate.delete(user_id)
+			end
+			@post.down_rate.push(user_id)
+		end
+
+		@post.save
+		redirect_to @post, success: 'Действие успешно выполнено.'
+	end
+
   def update
 		if @post.update(post_params)
 			if params[:new_draft]

@@ -6,6 +6,11 @@
       |
       <% if post.published? %>
         <span class="badge rounded-pill bg-primary">Опубликовано</span>
+        |
+        <span class="upRate" style="color: green"> + <%= post.up_rate.length %></span>
+        /
+        <span class="downRate" style="color: red">- <%= post.down_rate.length %></span>
+        |
       <% else %>
         <span class="badge rounded-pill bg-secondary">Черновик</span>
       <% end %>
@@ -16,7 +21,7 @@
       |
       <%= link_to 'Удалить', post_path(post), method: :delete, data: { confirm: 'Вы уверены?' } %>
       <% end %>
-    </span>
+      </span>
   </section>
 
   <section class="post-summary clearfix">
