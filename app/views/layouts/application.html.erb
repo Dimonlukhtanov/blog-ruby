@@ -21,6 +21,11 @@
           </ul>
           <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
             <% if user_signed_in? %>
+              <% if current_user.role == "admin" %>
+                <li class="nav-item">
+                  <%= link_to "Админка", users_path, class: "btn btn-outline-danger" %>
+                </li>
+              <% end %>
               <h5><span class="badge bg-secondary"><%= current_user.username %></span></h5>
               <li class="nav-item">
                 <%= link_to "Мои посты", myposts_path, class: "nav-link" %>

@@ -1,0 +1,12 @@
+<h5><%= user.username %> - <%= user.email %>
+<span class="badge rounded-pill bg-primary"><%= user.role %></span>
+<% if current_user  %>
+  <% if current_user.role == "admin" && user.role != "admin" %>
+    <% if !user.ban || user.ban <= Time.zone.now %>
+      <%= link_to 'Забанить на 14 дней', ban_path(user.id) %>
+    <% else %>
+      <%= link_to 'Разбанить', unban_path(user.id) %>
+    <% end %>
+  <% end %>
+<% end %>
+</h5>
