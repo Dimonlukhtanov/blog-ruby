@@ -4,8 +4,8 @@ class CommentsController < ApplicationController
     @comment = @post.comments.new(comment_params)
     @comment.author_id = current_user.id
     user = User.find(current_user.id)
-    @comment.username = "#{user.username}"
-    @comment
+    @comment.username = user.username.to_s
+
     @post.save
     redirect_to post_path(@post), success: 'Комментарий успешно добавлен'
   end
@@ -18,8 +18,7 @@ class CommentsController < ApplicationController
     redirect_to post_path(@post), success: 'Комментарий успешно удален'
   end
 
-  private def comment_params
+  def comment_params
     params.require(:comment).permit(:username, :body)
   end
-
 end

@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-
   def index
     @users = User.all
   end
@@ -10,6 +9,7 @@ class UsersController < ApplicationController
 
   def ban
     return unless user_signed_in?
+
     @user = User.find(params[:id])
     @time_zone = Time.zone.at(ban_time(3600 * 24 * 14))
     @user.update(ban: @time_zone)
@@ -20,11 +20,11 @@ class UsersController < ApplicationController
 
   def unban
     return unless user_signed_in?
+
     @user = User.find(params[:id])
     @user.update(ban: nil)
     @user.ban = nil
     @user.save
     redirect_to users_path(@user.id), success: "Успешно, пользователь: #{@user.username} разбанен "
   end
-
 end

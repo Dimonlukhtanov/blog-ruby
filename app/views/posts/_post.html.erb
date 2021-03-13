@@ -16,7 +16,7 @@
       <% end %>
       Автор статьи: <span class="badge bg-secondary"><%= post.user.username %></span>
       <% if current_user %>
-        <% if current_user.id == post.user_id || current_user.role == "admin" || "moderator" %>
+        <% if current_user.id == post.user_id || current_user.role != "user" %>
           |
           <%= link_to 'Изменить', edit_post_path(post) %>
           |
